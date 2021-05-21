@@ -4,13 +4,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>result/memberInsertOutput.jsp</title>
+<title>Insert title here</title>
 </head>
 <body>
-	<h3>가입완료</h3>
-	<p>${member.name }님 환영합니다.</p>
-	<p>ID: ${member.id } </p>
-	<p>Mail: ${member.mail } </p>
+	<h3>수정완료</h3>
+	<p> ${member.name }/ ${member.id }/${member.passwd }/ ${member.mail } </p>
+	
 	<a href="index.jsp">첫페이지</a>
 </body>
 </html>

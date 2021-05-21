@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -55,7 +57,30 @@ public class MemberDAO {
 			}
 	}
 	
-	//DB처리기능
+	// 한건조회
+	public MemberVO searchMember(String id) {
+		connect();
+		String sql = "select * from member_b where id=?";
+		MemberVO member = null;
+		try {
+			psmt = conn.prepareStatement(sql);		//psmt객체
+			psmt.setString(1, id);
+			rs = psmt.executeQuery();
+			if(rs.next()) {
+				member = new MemberVO();
+				member.setId(rs.getString("id"));
+				member.setmail(rs.getString("mail"));
+				member.setName(rs.getString("name"));
+				member.setPasswd(rs.getString("passwd"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+		return member;
+	}
+	// DB처리기능
 	public void insertMember(MemberVO member) {
 		connect();
 		String sql = "insert into member_b(id, name, passwd, mail) values(?,?,?,?)";
@@ -74,4 +99,64 @@ public class MemberDAO {
 		}
 		
 	}
+	//리스트
+	public List<MemberVO> listMember(){
+		connect();
+		String sql = "select * from member_b order by 1";
+		List<MemberVO> memberList = new ArrayList<>();
+		try {
+			psmt = conn.prepareStatement(sql);		//psmt객체
+			rs = psmt.executeQuery();
+			while(rs.next()) {
+				MemberVO member = new MemberVO();
+				member.setId(rs.getString("id"));
+				member.setmail(rs.getString("mail"));
+				member.setName(rs.getString("name"));
+				member.setPasswd(rs.getString("passwd"));
+				memberList.add(member);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+		return memberList;
+	}
+	
+	//삭제
+	public void deleteMember(String id) {
+		connect();
+		String sql = "delete from member_b where id=?";
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, id);
+			int r =psmt.executeUpdate();
+			System.out.println(r + "건 삭제");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+	}
+	
+	
+	//수정
+	public void updateMember(MemberVO member) {
+		connect();
+		String sql = "update member_b set passwd=?,name=?,mail=?  where id=?";
+		try {
+			psmt = conn.prepareStatement(sql);
+			psmt.setString(1, member.getPasswd());
+			psmt.setString(2, member.getName());
+			psmt.setString(3, member.getmail());
+			psmt.setString(4, member.getId());
+			psmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			close();
+		}
+	}
+	
 }
